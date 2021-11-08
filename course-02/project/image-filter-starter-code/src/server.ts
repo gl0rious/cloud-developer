@@ -1,14 +1,14 @@
-import express from 'express';
+import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import { filterImageFromURL, deleteLocalFiles } from './util/util';
 
 (async () => {
 
   // Init the Express application
-  const app = express();
+  const app: Express = express();
 
   // Set the network port
-  const port = process.env.PORT || 8082;
+  const port: string = process.env.PORT || '8082';
 
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
@@ -30,15 +30,14 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
-  app.get("/filteredimage", async (req, res) => {
-    const url = req.query.image_url;
+  app.get("/filteredimage", async (req: Request, res: Response) => {
+    const url: string = req.query.image_url as string;
     filterImageFromURL(url)
-      .then(filtered => {
+      .then((filtered: string) => {
         res.sendFile(filtered, () => {
           deleteLocalFiles([filtered]);
         });
-      }).catch(err => {
-        // console.log(err);
+      }).catch(() => {
         res.status(422).send('Unvalid image URL')
       });
   });
